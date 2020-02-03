@@ -8,7 +8,7 @@ import json
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///C:/Users/USER/Desktop/sem6/cc/assignment/1/rideshare.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///rideshare.db'
 db = SQLAlchemy(app)
 
 
@@ -111,39 +111,6 @@ def add_ride():
     return {},201
 
 ###############################################TASK 4################################################
-
-curr_time=datetime.now().strftime("%d-%m-%Y:%S-%M-%H")
-
-@app.route('/api/v1/rides', methods=["GET"])
-def get_rides():
-    results={}
-    res=[]
-    final=[]
-    if 'source' in request.args:
-        src=str(request.args['source'])
-    if 'destination' in request.args:    
-        dest=str(request.args['destination'])
-    else:
-        return jsonify("Please mention source and destination"),405
-    
-    curr_time=datetime.now().strftime("%d-%m-%Y:%S-%M-%H")
-    #ride= ride_details.query.filter((ride_details.source==src)&(ride_details.destination==dest)).all()
-    if (ride is None):
-        return jsonify("Ride Id does not exist"), 405
-    else:
-        for attr in ride:
-            results={}
-            results["rideid"]=getattr(attr,"rideid")
-            results["username"]=getattr(attr,"username")
-            results["timestamp"]=getattr(attr,"timestamp")
-            res.append(results)
-        for ride in res:
-            tdelta= datetime.strptime(ride['timestamp'],'%d-%m-%Y:%S-%M-%H') - datetime.strptime(curr_time,'%d-%m-%Y:%S-%M-%H')
-            #print(tdelta.seconds)
-            if(tdelta.seconds>0):
-             #   print(tdelta)
-                final.append(ride)
-        return jsonify(final)
 
 
 ###############################################TASK 5################################################
