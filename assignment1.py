@@ -154,6 +154,8 @@ def write_db():
 
 ###############################################TASK 9################################################
 
+
+    
 @app.route("/api/v1/db/read",methods=["POST"])
 def read_db():
     data = request.get_json()["where"]
@@ -161,7 +163,8 @@ def read_db():
     tn = request.get_json()["table"]
     tn=eval(tn) 
     new_user=tn()
-    for i in range(len(data)):
+    result = data.find('AND') 
+    if(result==-1):
         ind = data.find('=')
         att = data[:ind-1]
         val = data[ind+2:]
@@ -172,8 +175,34 @@ def read_db():
             for j in cn:
                 a = getattr(user1, j)
                 d[j] = a
-        print(d)
         return d
+    else:
+        q1 = data[:result-1]
+        q2 = data[result+4:]
+        i1 = q1.find('=')
+        a1 = q1[:i1-1]
+        v1 = q1[i1+2:]
+        #print(a1)
+        x1 = getattr(tn, a1)
+        i2 = q1.find('=')
+        a2 = q1[:i2-1]
+        v2 = q1[i2+2:]
+        x2 = getattr(tn, a2)
+        user1= tn.query.filter((x1 == v1)&(x2 == v2)).all()
+        #print(user1)
+        d = {}
+        #return str(user1)
+        #return str(cn)
+        for i in user1:
+            cnt = 0
+            for j in cn:
+                if j not in d:
+                    d[j] =[]
+                    cnt =cnt+1
+                a = getattr(i, j)
+                d[j].append(a)
+        return d
+        #print(d)
 
 if __name__ == "__main__":
     app.debug=True
